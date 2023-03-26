@@ -1,0 +1,4 @@
+gluster volume info gv0
+
+а потом мапится 
+mount -t glusterfs ibdockappg:/gv0 /gluster_share/ibconf/

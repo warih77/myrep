@@ -1,0 +1,5 @@
+Прометеус:
+curl -X POST localhost:9099/-/reload
+
+Алерт менеджер:
+curl -X POST localhost:9093/-/reload

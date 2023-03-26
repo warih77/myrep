@@ -1,0 +1,94 @@
+MINIO
+Подключиться к контейнеру:
+mc alias set minio https://vhost:9000 token --insecure
+Поиск файла:
+mc find minio/minio --newer-than 14d --insecure --name "*" -print {time} {} >>/root/mc/files.20211126.txt
+
+
+4 disks is the minimum required for erasure coding
+
+Use mc mb to create a bucket on an S3-compatible host. The --with-lock option creates the bucket with locking enabled:
+mc mb --with-lock ALIAS/BUCKET либо mc mb -l ALIAS/BUCKET
+
+retantion - можно указать сколько времени хранить старые версии файла, пререквизит для фичи --with-lock при создании бакета
+./mc retention set  --recursive --default governance 30d myminio/newfree ### governance/compliance
+./mc ls --versions myminio/newfree/hui
+
+In governance mode, users can't overwrite or delete an object version or alter its lock settings unless they have special permissions.
+In compliance mode, a protected object version can't be overwritten or deleted by any user,
+
+
+
+
+Практика: 
+
+Логопас от пользака:
+export PATH=$PATH:$HOME/minio-binaries/
+export MINIO_ROOT_USER=minio-admin
+export MINIO_ROOT_PASSWORD=Qwerty1234
+
+Генерация MINIO_KMS_SECRET_KEY:
+cat /dev/urandom | head -c 32 | base64 -
+export MINIO_KMS_SECRET_KEY=my-minio-encryption-key:ur3D5BgWU4aUUYZHj01IImUq48ZyvcUdE326EdtSvoKEo=
+
+Создание дисков:
+mkdir /nfs-data/disk1/data
+mkdir /nfs-data/disk2/data
+mkdir /nfs-data/disk3/data
+mkdir /nfs-data/disk4/data
+
+Запуск/stop/restart minio:
+minio server http://oradfs.moscow.alfaintra.net/nfs-data/disk{1...4}/data --console-address ":1530"
+minio server http://linuxedu2.moscow.alfaintra.net/data/disk{1...4}/ --console-address ":1540"
+mc admin service restart myminio/
+mc admin service stop myminio/
+
+
+./mc admin info myminio
+
+Настройка алиаса:
+mc alias set myminio http://IP:9000 minio-admin PassWord
+
+Изменить storage_class config:
+./mc admin config set myminio/ storage_class rrs="EC:4"
+Посмотреть, что значение изменилось:
+./mc admin config get myminio/ storage_class
+
+./mc admin info myminio
+   
+
+mc mb --with-lock myminio/BUCKET - создать бакет
+	--with-lock #option creates the bucket with locking enabled
+mc rb - удалить бакет
+	--force #Allows running mc rb on a bucket with versioning enabled.
+
+
+./mc ls myminio.BUCKET
+
+./mc mv hui myminio/newfree/hui2
+
+./mc admin config set myminio/
+
+./mc admin config set myminio/
+./mc admin config set myminio/ storage_class --env
+
+minio-console
+site-kick
+
+
+Erasure Set
+Server Pool
+Cluster
+Standalone Deployments / Distributed Deployments
+Site-to-Site Replication / Versioning / Retention / "High Availability / Redundancy" / Scaling
+Enable Bucket Versioning
+Buckets with Existing Content / Suspend Bucket Versioning / Version ID Generation
+Versioning Dependent Features
+Versioned Buckets / Object Expiration
+Client-side Bucket Replication / Server-Side Bucket Replication
+Replication State
+
+
+
+Поменять уровень логирования
+Мониторинг

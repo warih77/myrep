@@ -1,0 +1,116 @@
+Посмотреть логи:
+journalctl logstash-sql.service --since "2021-03-27 03:10" --until "2021-03-27 03:30"
+journalctl -u elasticsearch.service  --since "2021-03-27 03:10" --until "2021-03-27 03:30"
+
+#скопировать с другого сервера
+scp -r wasadm@vhost1:/LOGS/property/license/license.xml /LOGS/property/license/
+
+Все коннекты в ОС:
+lsof -i -n -P
+
+#Нужно дписать зачем:
+netstat -ano|grep 5000
+
+Посмотреть ходит ли что-то с сервера на 9092
+netstat -anp|grep 9092
+
+Команды tcpdump:
+sudo tcpdump -i eth0 -nn port 8099 -w 1.txt
+
+#Проверка доступности сервера
+tcpdump -n -p -v -i eth0 host 10.228.227.243
+nc -zvw3 vhost1 80
+echo > /dev/tcp/gw.zalupa.net/25 && echo "vse zaebis"
+
+TOP-10 самых больших файлов
+du -ah . 2>/dev/null | sort -rh | head -n 10
+
+Топ папок:
+du -k | sort -n | perl -ne 'if ( /^(\d+)\s+(.*$)/){$l=log($1+.1);$m=int($l/log(1024)); printf ("%6.1f\t%s\t%25s %s\n",($1/(2**(10*$m))),(("K","M","G","T","P")[$m]),"*"x (1.5*$l),$2);}'
+
+Команды grep
+grep -R "что-то там" /WAS
+grep -i "POST /api/v1/envelopes" grampus-access.log > post_api_v1_envelope
+
+TAR с созданием папки и разархивацией:
+tar xvf project.tar -C ~/Downloads
+
+Утилизация диска:
+sar -d
+ioscan -fnNkCdisk
+
+Узнать какие точки монтирования связаны с диском:
+/sbin/pvdisplay /dev/disk/disk2392
+
+Утилизаци сетевых интерфейсов:
+nwmgr -S hp_apa   (или /usr/sbin/nwmgr -S hp_apa)
+
+tar -xvf /oradata/ibdb/data_files/12.1.0-EE.tar -d 12.1.0-EE
+
+yum list installed
+yum repolist
+
+journalctl -xeu hazelcast-eskd -f
+journalctl -xe
+
+Проверка сетевого доступа:
+curl http://ccrmdockappn:9080/ChooseRole -nvk
+
+Отправить сообщение:
+curl -d '{"channel":"EMAIL","notification":{"subject":"test prelive","contentHtml":"test","importance":"HIGH"},"senderEmail":"IB-Onboarding@alfabank.ru","employeeEmails":["mzyuzina@alfabank.ru"]}' -H "Content-Type: application/json" -X POST http://dockapp:12801/send
+
+Посмотреть сетевые интерфейсы:
+dmesg | grep -i duplex
+
+-----------------------
+Чтобы получить доступ до банковских репозиториев с пакетами написать на linux_support, они предоставят доступ для нужных серверов. После предоставления доступа выполнить:
+
+cd /etc/yum.repos.d/
+yum clean all
+rm -rf /var/cache/yum/x86_64/7Server
+rm -f up2date_ol7.repo
+wget http://up2date:8007/up2date_ol7.repo  
+(curl http://up2date:8007/up2date_ol7.repo > up2date_ol7.repo)
+yum repolist
+затем заэйнейблить нужный репозиторий изменив enabled=0 на enabled=1, я в тесте включал репозиторий [ol7-developer-epel]
+-----------------------
+
+
+logical-vol-data data
+/dev/logical-vol-data/data /data         xfs     defaults        0 0
+
+fasttrec
+
+host -a 172.11.11.11
+netstat -na
+sudo tcpdump -ni eth0 not port 22 -w gbaappr1.pcap
+ip addr show
+ip route show
+ps aux --sort -rss
+
+find /LOG/Application/GDCC/ -type f -name \*.gz -mtime +365 -exec rm -rf {} \;
+
+############################
+Транкейт логов в docker:
+/usr/bin/* /var/lib/docker*
+    (root) NOPASSWD: /usr/bin/truncate -s0 /var/lib/docker/containers/*
+sudo /usr/bin/cat /var/lib/docker/containers/50ae73dda528-json.log
+
+в контейнере работает пользователь, с определенным id, сейчас на серверах vhost* внутри контейнера работает пользователь с id = 0, и он создает файлы снаружи контейнера, внешняя система т.е. в нашем случае ibdockappn воспринимает эти файлы с владельцем id=0 как рутовые, потому что root в системе ibdockappn (и в других системах) тоже имеет id=0
+т.е. надо сказать контейнеру, чтоб он создавал файлы с id = 484
+vhost:~ # id dockeradm
+uid=484(dockeradm) gid=484(docker) groups=1000(upbp),484(docker)
+или поменять id пользователя внутри контейнеров
+###########################
+
+Linux посмотреть логи:
+Рестарт logstash и просмотре системного лога logstash:
+sudo systemctl restart logstash-sql.service
+journalctl -u logstash-sql.service -f
+journalctl -xeu hazelcast -f
+
+### curl
+curl http://host/mds/branch/v10/rest -H 'X-External-System-Code: SITE' -H 'X-External-User-Code: OFFICES' | jq '.offices[] |select(.kinds[] == "") | select(.mnemonic == "NOL1")
+curl --location --request GET "http://vhost/administration" -vvvv
+###
+

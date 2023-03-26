@@ -1,0 +1,22 @@
+7. Настроить git в консоли:
+git config --global user.name 22
+git config --global user.email 2323@mail.ru
+
+git status
+git add hello.txt	В нашем случае у нас только один файл, так что добавим его
+git checkout -b add_prometheus_mon_blackbox_alfa
+git add -A	Если нам нужно добавить все, что находится в директории, мы можем использовать
+git commit -m ""
+git push origin HEAD:add_topics_kafka
+git branch
+git push origin --delete add_topics_kafka
+
+
+---------
+Запускается ssh agent
+ssh-agent
+Вывод добавляем в ~/SSHAGENT (с заменой предыдущего)
+. ~/SSHAGENT 
+ssh-add /home/dockeradm/.ssh/id_rsa
+Вводим passphrase берем из файла с паролями dockrhel ssh passphrase
+---------

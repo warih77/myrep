@@ -1,0 +1,55 @@
+!НУЖЕН ЛОКАЛЬНЫЙ АДМИН!
+
+Шаги :
+
+### Устанавливаем компоненты в windows:
+cmd
+(установить WSL) dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+(компонент платформы Virtual Machine)  dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+
+### скачать образ Ubuntu
+T:\IT\UPBP\WSL_Ubuntu_Image
+
+
+### hold
+apt-mark hold libc6:amd64
+apt-mark hold bash
+apt-mark hold zlib1g:amd64
+
+
+### установить репозитории
+deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal main restricted
+deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal-updates main restricted
+deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal universe
+deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal-updates universe
+
+
+### Установка пакеты
+apt install python3-pip 
+apt install openjdk-8-jre mc python python3-pip ansible sshpass python-setuptools postgresql-client-common
+pip3 install docker-py
+
+
+### завесить маунт
+/etc/wsl.conf:
+[automount]
+options = "metadata"
+
+
+*необходимые версии:
+apt-cache policy libc6:amd64
+libc6:
+  Installed: 2.31-0ubuntu9.2
+  Candidate: 2.31-0ubuntu9.9
+
+
+apt-cache policy bash
+bash:
+  Installed: 5.0-6ubuntu1.1
+  Candidate: 5.0-6ubuntu1.2
+apt-cache policy zlib1g:amd64
+zlib1g:
+  Installed: 1:1.2.11.dfsg-2ubuntu1.2
+  Candidate: 1:1.2.11.dfsg-2ubuntu1.3
+  

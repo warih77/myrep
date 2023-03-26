@@ -1,0 +1,31 @@
+https://hub.docker.com/r/levonet/rsyslog
+docker pull levonet/rsyslog
+
+docker run --name rsyslog -d -p 514:514/tcp -p 514:514/udp \
+    -v /APP/rsyslog:/etc/rsyslog.d:rw \
+    -v /LOGS/rsyslog/:/var/log/syslog \
+    levonet/rsyslog
+	
+	
+### config file
+#module(load="imtcp")
+#input(type="imtcp" port="514")
+
+module(load="omkafka")
+
+template(name="json-template" type="list") {
+    property(name="msg")
+}
+
+if $inputname == "imtcp" then {
+   action(broker=["vhost:9092","vhost:9092","vhost:9092"]
+      type="omkafka"
+      template="json-template"
+      topic="vhost-live-json"
+      partitions.auto="on"
+      queue.type="Disk"
+      queue.filename="messages"
+      queue.spoolDirectory="/var/log/syslog"
+      queue.maxDiskSpace="1g"
+      queue.maxfilesize="10m"
+      confParam=["compression.codec=gzip", "socket.timeout.ms=500", "security.protocol=SASL_PLAINTEXT", "sasl.mechanisms=SCRAM-SHA-256", "sasl.username=username", "sasl.password=PaSSw0rd"])

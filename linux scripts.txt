@@ -1,0 +1,104 @@
+﻿Comparisons:
+-eq	equal to
+-ne	not equal to
+-lt	less than
+-le	less than or equal to
+-gt	greater than
+-ge	greater than or equal to
+
+File Operations:
+-s	file exists and is not empty
+-f	file exists and is not a directory
+-d	directory exists
+-x	file is executable
+-w	file is writable
+-r	file is readable
+
+echo $?     -- Вывод кода завершения команды 0 - успех 1 2 3 - нет
+
+echo crmBMB | tr 'A-Z' 'a-z'   #Превратит в crmbmb
+
+declare/typeset -i peremen   # -i integer(целое число), premen - любая переменная
+-a 		     # -a array
+-f 		     # -f function
+-x export            #  Эта инструкция объявляет переменную, как доступную для экспорта. Пример: declare -x var3 ; declare -x var3=373
+declare -f # Инструкция declare -f, без аргументов, приводит к выводу списка ранее объявленных функций в сценарии.
+
+
+#####
+read RECOVER_SERVER
+ps ${RECOVER_SERVER}
+
+
+
+##### Передача списка в переменную и использование этого списка.
+for var in $(/usr/local/bin/lsof | grep /oradata/testauthr/data_files/data/testauthr | awk '{print $2}')
+do
+echo The  $var item
+done
+#####
+echo
+echo -e "Do you want restart all container ${RED}Alfa-Finance ${NC} system: Y or N" 
+echo
+
+read answer
+
+if [ $answer = Y ]
+	then
+            docker restart $containers_grampus
+            docker restart $containers_factoring
+        elif [ $answer = N ]
+        then
+		exit
+	else
+		echo "\nSomething wrong!"
+fi
+#####
+/usr/local/bin/lsof | grep ${DATA_LOCATION}
+echo "Do you want to clouse this session Y or N?"
+read answer
+echo
+if [ $answer = Y ]
+	tnen
+	  for var in (/usr/local/bin/lsof | grep ${DATA_LOCATION} | awk '{print $2}')
+      do
+       kill -9 $var >>$RMNLOG
+      done
+    elif [ $answer = N ]
+		exit
+	else
+		exit
+fi
+##### если файл существует, выводим сообщение
+if [[ -f '/etc/passwd' ]]; then
+    echo "Файл с определением пользователей существует"
+fi
+
+
+
+
+/usr/local/bin/lsof | grep /home/oracle/SCRIPTS/zdb/scripts | awk '{print $2}'
+
+
+ps -ef | grep java | awk '{print $1}'
+
+
+ORACLE_SID=oracul
+RMNLOG=./dup_db_${ORACLE_SID}.log
+for var in (/usr/local/bin/lsof | grep /home/oracle/SCRIPTS/zdb/scripts | awk '{print $2}')
+do
+echo The $var >>$RMNLOG
+done
+
+
+kill -9 $var >>$RMNLOG
+
+######
+#!/bin/sh
+local i=0
+for var in $(/usr/local/bin/lsof | grep /home/oracle/SCRIPTS/zdb/scripts | awk '{print $2}')
+do
+let i=i+1
+echo "$i $var"
+done
+#########

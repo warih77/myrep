@@ -1,0 +1,7 @@
+Проверка синтаксиса конфига:
+docker exec -it nginx nginx -t
+
+Релоад nginx:
+docker kill -s HUP nginx
+docker exec -it nginx nginx -s reload
+

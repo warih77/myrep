@@ -1,0 +1,18 @@
+Обновляем папку shared-roles
+ansible-galaxy install -fr requirements.yml
+
+Лист тасок:
+ansible-playbook -i integration name_playbook.yml -t prometheus,grafana,elasticsearch-exporter --list-tasks
+
+Смотрим хосты где будут выполняться таски:
+ansible-playbook -i production name_playbook.yml -t prometheus,grafana,elasticsearch-exporter --list-hosts
+
+Скипнуть тег:
+ansible-playbook -i inv-production playbooks/play-logging.yml --skip-tags es_setup_ilm,logstash  -CD --ask-vault-pass
+
+---------------
+Создать временный контейнер с ansible:
+docker container run --rm --name ansibles -ti -v /home/dockeradm/.ssh:/tmp/.ssh -v /home/dockeradm/rer-infra-scripts:/root/scripts -v /home/dockeradm/known_hosts:/root/.ssh/known_hosts oteprb.binary.olo.ru/oterk/ansible:v1.5 /bin/bash
+cp /tmp/.ssh/id_rsa /root/.ssh/id_rsa && cp /tmp/.ssh/id_rsa.pub /root/.ssh/id_rsa.pub
+
+------------------

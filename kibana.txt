@@ -1,0 +1,9 @@
+GET _ilm/policy/
+GET /_cat/indices?v
+GET /my-index-000001
+get _cluster/settings
+Все дашборды:
+GET .kibana/_search?q=type:dashboard&
+
+Показать json темплейта:
+GET /_index_template/ilm-app

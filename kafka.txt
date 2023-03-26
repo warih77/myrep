@@ -1,0 +1,93 @@
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafkag:2181,eskd-kafkan:2181,eskd-kafkar:2181/kafka_live" --list
+
+
+
+/opt/kafka/bin/kafka-topics.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --topic "eskd-event-document" --create --if-not-exists --partitions 1 --replication-factor 1 --config compression.type=gzip --config retention.ms=2592000000
+
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --list --cluster | grep User: | awk -F: '{print $2}' | awk '{print $1}' | sort -u
+
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --list | grep Topic | awk -F: '{ print $2}' | awk -F'`' '{print $1}'
+
+/opt/kafka/bin/kafka-configs.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --describe --entity-type users | awk -F\' '{ print $2 }'
+
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --topic eskd-event-document --list | grep User: | awk -F: '{print $2}' | awk '{print $1}' | sort -u
+
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --allow-principal "User:eskdkafka" --producer --consumer --group consumer_eskdkafka --topic eskd-event
+
+посмотреть ACL
+kafka-acls.sh --authorizer-properties
+zookeeper.connect=ip-172-31-33-248.us-west2.compute.internal:2181
+--list
+--topic acl-test
+
+
+
+###############################################################
+ADD USER
+
+
+./bin/kafka-configs.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --alter --add-config 'SCRAM-SHA-512=[password='Qwerty123']' --entity-type users --entity-name mbmuser
+
+ADD ACL
+
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --allow-principal User:mbmuser --operation ALL --topic eskd-event
+
+###############################################################
+
+
+
+/opt/kafka/bin/kafka-configs.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --alter --add-config 'SCRAM-SHA-256=[password='Пароль']' --entity-type users --entity-name mbmuser
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --allow-principal User:mbmuser --operation ALL --topic eskd-events
+
+
+
+/opt/kafka/kafka-configs.sh  --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --alter --add-config "SCRAM-SHA-256=[password='Qwerty123']" --entity-type users --entity-name mbmuser 
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --allow-principal User:mbmuser --operation All --topic eskd-event
+
+
+
+-------------
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --cluster --operation All --topic eskd-event --allow-principal User:mbmuser --allow-host ALL
+-------------
+
+
+/opt/kafka/bin/kafka-configs.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --alter --delete-config 'SCRAM-SHA-256=[password='Qwerty123']' --entity-type users --entity-name mbmuser 
+
+
+
+
+Чтение из топика:
+kafka-console-consumer.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --topic eskd-events --from-beginning
+kafka-console-consumer.sh --bootstrap-server "eskd-kafka-pre3:9093,eskd-kafka-pre2:9093,eskd-kafka-pre1:9093" --topic eskd-events --from-beginning
+
+Записать в топик:
+kafka-console-producer.sh --broker-list "eskd-kafka-pre3:9093,eskd-kafka-pre2:9093,eskd-kafka-pre1:9093" --topic eskd-events
+###################################################################
+
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --allow-principal User:mbmuser --producer --consumer --group consumer_mbm --topic eskd-event
+
+
+Выполнил на PRELIVE:
+unset JMX_PORT
+/opt/kafka/bin/kafka-configs.sh --zookeeper "eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --alter --add-config 'SCRAM-SHA-256=[password='Пароль']' --entity-type users --entity-name mbmuser
+/opt/kafka/bin/kafka-acls.sh --authorizer-properties zookeeper.connect="eskd-kafka-pre3:2181,eskd-kafka-pre2:2181,eskd-kafka-pre1:2181/kafka_prelive" --add --allow-principal User:mbmuser --operation ALL --topic eskd-events
+Изменить kafka_jaas.conf
+
+
+
+  --kafka.version={{ kafka_lag_exporter_kafka_version }} \
+  --kafka.server={{ kafka_lag_exporter_kafka_server }} \
+  --sasl.enabled \
+  --sasl.username=eskdkafka \
+  --sasl.password=zJC_1ZDfZSAnt-PZqo9gfEpjMS_ZYZzR \
+  --sasl.mechanism=PLAIN \
+  --tls.insecure-skip-tls-verify \
+  --tls.enabled
+
+
+watch docker run --rm -it -e KAFKA_OPTS="-Djava.security.auth.login.config=/kafka/kafka_jaas.conf" -v ~/client-sasl.properties:/kafka/client-sasl.properties -v ~/kafka_jaas.conf:/kafka/kafka_jaas.conf --entrypoint bash eco.binary.alfabank.ru/kafka:1.1.0 /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server "eskd-kafka-pre3:9093,eskd-kafka-pre2:9093,eskd-kafka-pre1:9093" --command-config /kafka/client-sasl.properties --describe --group events-api-consumer
+
+
+./kafka-console-consumer.sh --bootstrap-server eskd-kafkan:9093, eskd-kafkar:9093, eskd-kafkag:9093 --consumer.config /kafka/myconsumer.properties --from-beginning --topic eskd-scanning-errors >> /kafka/eskd-scanning-errors.20211126.txt
+
+

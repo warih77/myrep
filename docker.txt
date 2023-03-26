@@ -1,0 +1,95 @@
+
+---
+CONTAINER_ID=factoring_file_api
+docker ps --format "table {{.ID}}\t{{.Names}}" | grep $CONTAINER_ID | awk {'print $1'}
+docker cp /home/dockeradm/jattach $CONTAINER_ID:/tmp
+docker exec -it $CONTAINER_ID /tmp/jattach 1 jcmd "GC.heap_dump /tmp/dump.hprof" && docker cp $CONTAINER_ID:/tmp/dump.hprof /LOGS
+
+Посмотреть ограничение по CPU на контейнерах:
+docker inspect --format='{{.Config.Image}}; NanoCpus= {{.HostConfig.NanoCpus}}' $(docker ps -aq)| sed 's/.*\///' |sort
+
+
+docker exec -it $CONTAINER_ID sh
+cd /tmp
+---
+
+Зайти в контейнер под рутом:
+docker exec -u 0 -it container_name bash
+
+docker top container_name
+
+Найти что-либо во всех контейнерах на сервере:
+docker inspect $(docker ps -q) | grep jdbc
+
+Найти в определенных контейнерах:
+docker inspect $(docker ps | grep ibreporting_ | awk '{print $1}') | grep jdbc
+
+docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.NetIO}}\t{{.BlockIO}}\t{{.PIDs}}"
+
+docker inspect $(docker network ls | awk '{print $1}' | sed '1d') | grep Subnet
+
+Очистить не используемые Images:
+docker image prune -a
+
+Стопнуть по маске имени:
+docker stop $(docker ps -q -f name="grampus*")
+
+Подключиться к dockerhub
+TOKEN=$(curl --user 'user:pass' "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest
+
+Копировать из контейнера файл:
+docker cp f20206bab296:/app/logs/application.log /home/dockeradm
+
+docker save levonet/rsyslog > rsyslog.tar
+docker load --input rsyslog.tar
+
+docker logs --tail=100  prometheus
+
+
+Формат https://docs.docker.com/engine/reference/commandline/ps/ :
+docker ps --format "table {{.Names}}\t{{.Image}}"
+
+Узнать какие сетки используются контейнерами.
+docker ps --format "table {{.Networks}}\t{{.Names}}"
+
+
+
+#############
+Основное если нужно сгенерить docker-compose по docker inspect
+volume, mount, environment variable, ports, cmd, entrypoint
+
+services:
+jenkins:
+image: public/jenkins:2.716.1 # доступные образы смотреть $docker images
+container_name: jenkins # Своё имя конетйнера
+network_mode: "bridge" # как в VMWare
+ports:
+- "18010:8080" # Откуда на хосте : куда в контейнере
+- "50000:50000" # Откуда на хосте : куда в контейнере
+restart: always
+logging:
+driver: none
+volumes:
+- /data_shared/docker/jenkins/jenkins:/var/jenkins_home:rw # Откуда на хосте : куда в контейнере
+- /LOGS/jenkins:/var/jenkins_home/logs # Откуда на хосте : куда в контейнере
+environment:
+- "JENKINS_SLAVE_AGENT_PORT=50000"
+- "PATH=/usr/local/openjdk-8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+- "LANG=C.UTF-8",
+- "JAVA_HOME=/usr/local/openjdk-8",
+- "JAVA_VERSION=8u212-b04",
+- "JAVA_BASE_URL=https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u212-b04/OpenJDK8U-",
+- "JAVA_URL_VERSION=8u212b04",
+- "JENKINS_HOME=/var/jenkins_home",
+- "JENKINS_SLAVE_AGENT_PORT=50000",
+- "JENKINS_VERSION=2.176.1",
+- "JENKINS_UC=https://updates.jenkins.io",
+- "JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental",
+- "JENKINS_INCREMENTALS_REPO_MIRROR=https://repo.jenkins-ci.org/incrementals",
+- "COPY_REFERENCE_FILE_LOG=/var/jenkins_home/copy_reference_file.log"
+###############
+
+DEBUG docker:
+docker run -d --name=ssh-slave-latest binary.ru/ssh-slave:latest sleep infinity
+docker run -it -d --name=ssh-slave-latest binary.ru/ssh-slave:latest

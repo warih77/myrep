@@ -1,0 +1,88 @@
+kubectl config get-contexts                  	# показать список контекстов
+kubectl config current-context			     	# показать текущий контекст (current-context)
+kubectl config set-context my-cluster-name      # установить my-cluster-name как текущий контекст
+kubectl config use-context my-cluster-name      # установить my-cluster-name как контекст по умолчанию
+kubectl config set-context --current --namespace=infra-ingress-nginx-external # Переключиться на нужный ns
+
+kubectl get pods
+kubectl get deployments -o wide                 # Аналог docker ps
+kubectl exec -it под_нейм -- sh                 # Войти в поду (либо bash)
+kubectl exec -it -n неймспейс_нейм под_тейм sh  # Войти в поду
+kubectl get pods под_нейм -o wide 			    # Вывести все поды и показать, на каких они нодах
+kubectl describe pods под_нейм             	    # Просмотреть информацию о поде такую как время # старта, количество и причины рестартов, QoS-класс и прочее
+kubectl logs -f my-pod 						    # Просмотр логов в режиме реального времени
+kubectl top pods 					            # Вывести информацию об утилизации ресурсов подами
+
+kubectl get ns/deployments/services
+#Получить .yaml сущностей
+kubectl get deployments/pods/ingresses/servicemonitors сущность_нейм -o yaml
+
+kubectl api-resources -o wide                   # All resources with expanded (aka "wide") output
+
+kubectl cp {{namespace}}/{{podname}}:path/to/directory /local/path # Копирование файла из Пода
+kubectl cp /local/path namespace/podname:path/to/directory         # Копирования файла в Под
+
+kubectl rollout history deployments деплоймент_нейм    # Проверить историю деплоймента
+kubectl rollout undo deployment деплоймент_нейм        # Откатить
+
+get deploy -o yaml | grep image:                #Посмотреть все версии images
+kubectl get deployments -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,IMAGE:.spec."template"."spec"."containers"[]."image",AvailRepl:."status"."availableReplicas"
+
+
+
+##################################################################################################
+
+#Редактирование .yaml сущностей
+kubectl edit deployments депл_нейм
+
+kubectl apply -f ./my-manifest.yaml # создать объект из файла
+
+kubectl create deployment nginx --image=nginx # запустить один экземпляр nginx
+
+kubectl edit pod my-pod # Изменение .yaml манифеста пода
+
+kubectl delete pod my-pod # Удаление пода
+
+
+kubectl port-forward pods/mongo-75f59d57f4-4nd6q 28015:27017 # Проброс порта Пода
+
+kubectl port-forward mongo-75f59d57f4-4nd6q 28015:27017 # Проброс порта Сервиса
+kubectl port-forward -n lesson14 static-web 8080:8080 # ключ -n означает неймспейс
+
+Kubectl port-forward [pod name] [local port]:[pod port] &
+
+
+
+
+### H2H commands
+#Select active cluster#
+kubectl config use-context alfalink-givc
+kubectl config use-context alfalink-nvc
+
+#scale pods#
+kubectl scale deployment statement statement-receiver direct-bank salary-core-api contract-reports autostatement letters-list-export nrd-file-integration employee-account payroll --replicas=0
+kubectl scale deployment statement statement-receiver direct-bank salary-core-api contract-reports autostatement letters-list-export nrd-file-integration employee-account payroll --replicas=1
+
+#switch to nvc/givc#
+kubectl config use-context alfalink-nvc
+kubectl config use-context alfalink-givc
+
+#scale pods#
+kubectl scale deployment statement statement-receiver direct-bank salary-core-api contract-reports autostatement letters-list-export nrd-file-integration employee-account payroll --replicas=1
+kubectl scale deployment statement statement-receiver direct-bank salary-core-api contract-reports autostatement letters-list-export nrd-file-integration employee-account payroll --replicas=0
+
+
+
+
+
+Deployments yaml:
+Kind: тут указано, что мы описываем ресурс вида Deployment.
+Replicas: свойство объекта спецификаций развёртывания, которое задаёт то, сколько экземпляров (реплик) подов нужно запустить.
+Type: описывает стратегию, используемую в данном развёртывании при переходе с текущей версии на новую. Стратегия RollingUpdate обеспечивает нулевое время простоя системы при обновлении.
+MaxUnavailable: это свойство объекта RollingUpdate, которое задаёт максимальное число недоступных подов (в сравнении с желаемым количеством подов) при выполнении последовательного обновления системы. В нашем развёртывании, подразумевающем наличие 2 реплик, значение этого свойства указывает на то, что после завершения работы одного пода ещё один будет выполняться, что делает приложение доступным в ходе обновления.
+MaxSurge: это свойство объекта RollingUpdate, которое описывает максимальное число подов, которое можно добавить в развёртывание (в сравнении с заданным числом подов). В нашем случае его значение, 1, означает, что, при переходе на новую версию программы, мы можем добавить в кластер ещё один под, что приведёт к тому, что у нас могут быть одновременно запущены до трёх подов.
+Template: этот объект задаёт шаблон пода, который описываемый ресурс Deployment будет использовать для создания новых подов. Вам эта настройка, наверняка, покажется знакомой.
+app: sa-frontend: метка для подов, создаваемых по заданному шаблону.
+ImagePullPolicy: определяет порядок работы с образами. В нашем случае это свойство установлено в значение Always, то есть, в ходе каждого развёртывания соответствующий образ будет загружаться из репозитория.
+
+
