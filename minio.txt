@@ -38,8 +38,8 @@ mkdir /nfs-data/disk3/data
 mkdir /nfs-data/disk4/data
 
 Запуск/stop/restart minio:
-minio server http://oradfs.moscow.alfaintra.net/nfs-data/disk{1...4}/data --console-address ":1530"
-minio server http://linuxedu2.moscow.alfaintra.net/data/disk{1...4}/ --console-address ":1540"
+minio server http://oras.moscow.alfaintra.net/nfs-data/disk{1...4}/data --console-address ":1530"
+minio server http://linuxe2.moscow.alfaintra.net/data/disk{1...4}/ --console-address ":1540"
 mc admin service restart myminio/
 mc admin service stop myminio/
 

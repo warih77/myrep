@@ -9,7 +9,7 @@ cmd
 
 
 ### скачать образ Ubuntu
-T:\IT\UPBP\WSL_Ubuntu_Image
+T:\IT\\WSL_Ubuntu_Image
 
 
 ### hold
@@ -19,10 +19,10 @@ apt-mark hold zlib1g:amd64
 
 
 ### установить репозитории
-deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal main restricted
-deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal-updates main restricted
-deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal universe
-deb [trusted=yes] https://binary.alfabank.ru/artifactory/ubuntu/ focal-updates universe
+deb [trusted=yes] https://binary.ru/artifactory/ubuntu/ focal main restricted
+deb [trusted=yes] https://binary.ru/artifactory/ubuntu/ focal-updates main restricted
+deb [trusted=yes] https://binary.ru/artifactory/ubuntu/ focal universe
+deb [trusted=yes] https://binary.ru/artifactory/ubuntu/ focal-updates universe
 
 
 ### Установка пакеты

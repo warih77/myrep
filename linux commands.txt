@@ -57,7 +57,7 @@ journalctl -xe
 curl http://ccrmdockappn:9080/ChooseRole -nvk
 
 Отправить сообщение:
-curl -d '{"channel":"EMAIL","notification":{"subject":"test prelive","contentHtml":"test","importance":"HIGH"},"senderEmail":"IB-Onboarding@alfabank.ru","employeeEmails":["mzyuzina@alfabank.ru"]}' -H "Content-Type: application/json" -X POST http://dockapp:12801/send
+curl -d '{"channel":"EMAIL","notification":{"subject":"test prelive","contentHtml":"test","importance":"HIGH"},"senderEmail":"onboarding@mail.ru","employeeEmails":["user@mail.ru"]}' -H "Content-Type: application/json" -X POST http://vhost:12801/send
 
 Посмотреть сетевые интерфейсы:
 dmesg | grep -i duplex
@@ -69,8 +69,8 @@ cd /etc/yum.repos.d/
 yum clean all
 rm -rf /var/cache/yum/x86_64/7Server
 rm -f up2date_ol7.repo
-wget http://up2date:8007/up2date_ol7.repo  
-(curl http://up2date:8007/up2date_ol7.repo > up2date_ol7.repo)
+wget http://vhost:8007/up2date_ol7.repo  
+(curl http://vhost:8007/up2date_ol7.repo > up2date_ol7.repo)
 yum repolist
 затем заэйнейблить нужный репозиторий изменив enabled=0 на enabled=1, я в тесте включал репозиторий [ol7-developer-epel]
 -----------------------
@@ -83,12 +83,12 @@ fasttrec
 
 host -a 172.11.11.11
 netstat -na
-sudo tcpdump -ni eth0 not port 22 -w gbaappr1.pcap
+sudo tcpdump -ni eth0 not port 22 -w file.pcap
 ip addr show
 ip route show
 ps aux --sort -rss
 
-find /LOG/Application/GDCC/ -type f -name \*.gz -mtime +365 -exec rm -rf {} \;
+find /LOG/Application/GD/ -type f -name \*.gz -mtime +365 -exec rm -rf {} \;
 
 ############################
 Транкейт логов в docker:
@@ -96,7 +96,7 @@ find /LOG/Application/GDCC/ -type f -name \*.gz -mtime +365 -exec rm -rf {} \;
     (root) NOPASSWD: /usr/bin/truncate -s0 /var/lib/docker/containers/*
 sudo /usr/bin/cat /var/lib/docker/containers/50ae73dda528-json.log
 
-в контейнере работает пользователь, с определенным id, сейчас на серверах vhost* внутри контейнера работает пользователь с id = 0, и он создает файлы снаружи контейнера, внешняя система т.е. в нашем случае ibdockappn воспринимает эти файлы с владельцем id=0 как рутовые, потому что root в системе ibdockappn (и в других системах) тоже имеет id=0
+в контейнере работает пользователь, с определенным id, сейчас на серверах vhost* внутри контейнера работает пользователь с id = 0, и он создает файлы снаружи контейнера, внешняя система т.е. в нашем случае vhost воспринимает эти файлы с владельцем id=0 как рутовые, потому что root в системе vhost (и в других системах) тоже имеет id=0
 т.е. надо сказать контейнеру, чтоб он создавал файлы с id = 484
 vhost:~ # id dockeradm
 uid=484(dockeradm) gid=484(docker) groups=1000(upbp),484(docker)
