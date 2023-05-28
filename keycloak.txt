@@ -1,0 +1,21 @@
+Теория:
+Stack:
+
+PING - динамисечкое определение членов кластера. UDP - transport data. UDP - discovery protocol.
+Initial (dirty) discovery of members. Used to detect the coordinator (oldest member), by mcasting PING requests to an IP multicast address. Each member responds with a packet {C, A}, where C=coordinator’s address and A=own address. After N milliseconds or M replies, the joiner determines the coordinator from the responses, and sends a JOIN request to it (handled by GMS). If nobody responds, we assume we are the first member of a group. Unlike TCPPING, PING employs dynamic discovery, meaning that the member does not have to know in advance where other cluster members are. PING uses the IP multicasting capabilities of the transport to send a discovery request to the cluster. It therefore requires UDP as transport.
+
+TCPPING - used with TCP as transport, and uses a static list of cluster members’s addresses.
+*It is recommended to include the addresses of all cluster members in initial_hosts.
+A protocol stack using TCP and TCPPING looks like this (other protocols omitted):
+###
+<TCP bind_port="7800" /> +
+<TCPPING initial_hosts="HostA[7800],HostB[7800]"
+         port_range="2" />
+###
+
+JDBC_PING  - uses a DB to store information about cluster nodes used for discovery. All cluster nodes are supposed to be able to access the same DB.
+When a node starts, it queries information about existing members from the database, determines the coordinator and then asks the coord to join the cluster. It also inserts information about itself into the table, so others can subsequently find it.
+When a node P has crashed, the current coordinator removes P’s information from the DB. However, if there is a network split, then this can be problematic, as crashed members cannot be told from partitioned-away members.
+
+Docs:
+https://infinispan.org/docs/stable/titles/server/server.html#default-jgroups-stacks_cluster-transport

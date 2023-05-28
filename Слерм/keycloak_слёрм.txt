@@ -1,0 +1,33 @@
+docker run --name=keycloak -d --volume /opt/keycloak/data:/opt/keycloak/data -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:17.0.1 start-dev
+
+Создение и настройка standalone db:
+docker run --name habr-pg -p 5432:5432 -e POSTGRES_PASSWORD=1488 -d postgres
+docker exec -it -u postgres habr-pg bash
+```
+psql -c "create database test_db;"
+psql -c "create user test_user with encrypted password 'test_user';"
+psql -c "grant all privileges on database test_db to test_user;"
+```
+```
+Показать все БД:
+\l
+Больше инфо:
+\l+
+Список юзеров:
+\du
+Посмотреть версию БД:
+SELECT version();
+Войти в определенную БД:
+psql -U test_user -d test_db
+```
+
+mkdir /opt/keycloak/data
+
+docker run -d --name=keycloak -p 8080:8080 \
+-e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \
+-e KC_HTTP_ENABLED=true -e KC_HOSTNAME_STRICT=false -e KC_HOSTNAME_STRICT_HTTPS=false \
+quay.io/keycloak/keycloak:17.0.1 \
+start \
+--auto-build \
+--db=postgres \
+--db-url=jdbc:postgresql://10.0.2.4:5432/test_db --db-username=postgres --db-password=1488 --http-enabled=true --http-port=8080
