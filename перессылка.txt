@@ -1,0 +1,135 @@
+kafka_update_service: Опция для обновления службы Kafka (true/false).
+
+kafka_content_from_hashi_vault: Получение содержимого Kafka из HashiCorp Vault.
+
+kafka_keystore: Путь к keystore.jks для SSL-сертификатов.
+
+kafka_truststore: Путь к truststore.jks для доверенных сертификатов.
+
+kafka_key_password: Пароль для ключа keystore.
+
+kafka_cacertfile: Путь к корневому сертификату (root.crt).
+
+kafka_certfile: Путь к сертификату брокера Kafka.
+
+kafka_cerkeyfile: Путь к закрытому ключу брокера Kafka.
+
+kafka_port_ssl: Порт для SSL-шифрования (по умолчанию 9092).
+
+kafka_listeners: Конфигурация прослушивателей Kafka.
+
+kafka_advertised_listeners: Адрес, который брокер Kafka объявляет клиентам.
+
+kafka_install_dir: Каталог, в который устанавливается Kafka.
+
+kafka_logs_dir: Каталог для журналов Kafka.
+
+kafka_data_dir: Каталог данных Kafka.
+
+kafka_heap_opts: Опции JVM для управления памятью.
+
+kafka_client_zk_user: Пользователь ZooKeeper для клиента Kafka.
+
+kafka_client_zk_pass: Пароль ZooKeeper для клиента Kafka.
+
+kafka_server_admin_name: Имя администратора сервера Kafka.
+
+kafka_server_admin_pass: Пароль администратора сервера Kafka.
+
+kafka_jmx_prometheus: Включение/отключение метрик для Prometheus (true/false).
+
+kafka_jmx_prometheus_port: Порт для метрик Prometheus.
+
+kafka_jmx_enable: Включение/отключение JMX (true/false).
+
+kafka_jmx_port: Порт для JMX.
+
+kafka_jmx_rmi_port: Порт для удаленного доступа к JMX.
+
+common_certs_content: Общее содержимое сертификатов.
+
+allow_everyone: Разрешение доступа всем (true/false).
+
+kafka_jmx_access_dict: Словарь доступа к JMX.
+
+hosts_count: Количество хостов в игре Ansible.
+
+default_replication_factor: Фактор репликации по умолчанию.
+
+auto_create_topics_enable: Включение/отключение автоматического создания топиков (true/false).
+
+num_partitions: Количество разделов топика.
+
+num_io_threads: Количество потоков ввода-вывода.
+
+num_replica_fetchers: Количество реплик.
+
+num_network_threads: Количество сетевых потоков.
+
+num_recovery_threads_per_data_dir: Количество потоков восстановления данных.
+
+message_max_bytes: Максимальный размер сообщения в байтах.
+
+replica_fetch_max_bytes: Максимальный размер данных для запроса реплик.
+
+replica_fetch_wait_max_ms: Максимальное время ожидания запроса реплик в миллисекундах.
+
+replica_max_lag_ms: Максимальное время задержки реплики в миллисекундах.
+
+offsets_topic_replication_factor: Фактор репликации для топика offsets.
+
+min_insync_replicas: Минимальное количество реплик для записи сообщения.
+
+transaction_state_log_replication_factor: Фактор репликации для журнала состояния транзакций.
+
+transaction_state_log_min_isr: Минимальное количество реплик для журнала состояния транзакций.
+
+log_roll_hours: Интервал времени для ротации журналов (в часах).
+
+log_retention_hours: Максимальное время хранения журналов (в часах).
+
+log_retention_bytes: Максимальный размер хранимых журналов (в байтах).
+
+log_segment_bytes: Максимальный размер сегмента журнала (в байтах).
+
+log_retention_check_interval_ms: Интервал проверки максимального времени хранения журналов (в миллисекундах).
+
+group_initial_rebalance_delay_ms: Задержка перед началом перебалансировки группы потребителей Kafka (в миллисекундах).
+
+sasl_mechanism_inter_broker_protocol: Механизм аутентификации для протокола между брокерами.
+
+sasl_enabled_mechanisms: Список разрешенных механизмов аутентификации.
+
+security_inter_broker_protocol: Протокол безопасности между брокерами.
+
+kafka_deprecated_sasl_user: Использование устаревшего пользователя SASL (true/false).
+
+zookeeper_install_dir: Директория установки ZooKeeper.
+
+zookeeper_keystore: Путь к keystore ZooKeeper.
+
+zookeeper_keystore_password: Пароль для keystore ZooKeeper.
+
+zookeeper_truststore: Путь к truststore ZooKeeper.
+
+zookeeper_truststore_password: Пароль для truststore ZooKeeper.
+
+zookeeper_clientPort: Порт для клиентов ZooKeeper.
+
+zookeeper_secureClientPort: Защищенный порт для клиентов ZooKeeper.
+
+zookeeper_chroot: Chroot-путь ZooKeeper.
+
+zookeeper_set_acl: Установка контроля доступа (ACL) ZooKeeper (true/false).
+
+zookeeper_server_auth_digestloginmodule: Включение/отключение аутентификации сервера ZooKeeper через DigestLoginModule (true/false).
+
+zookeeper_ssl_client_enable: Включение/отключение SSL-клиента ZooKeeper (true/false).
+
+zookeeper_user_super_pass: Пароль суперпользователя ZooKeeper.
+
+zookeeper_users: Словарь пользователей ZooKeeper.
+
+zookeeper_ssl_ciphersuites: Список поддерживаемых шифров для SSL ZooKeeper.
+
+kafka_ssl_cipher_suites: Список поддерживаемых шифров для SSL Kafka.
